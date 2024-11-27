@@ -1,0 +1,15 @@
+server_port: "8080"
+log_level: "info"
+database:
+  host: "db"
+  port: 5432
+  user: "postgres"
+  password: "postgres"
+  name: "developer_allocation"
+  sslmode: "disable"
+cache:
+  host: "cache"
+  port: 6379
+  password: ""
+  db: 0
+jwt_secret: "your_jwt_secret_key"

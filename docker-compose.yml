@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13
+    container_name: developer_allocation_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: developer_allocation
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  cache:
+    image: redis:6
+    container_name: developer_allocation_cache
+    ports:
+      - "6379:6379"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: developer_allocation_app
+    depends_on:
+      - db
+      - cache
+    environment:
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: password
+      DATABASE_NAME: developer_allocation
+      CACHE_HOST: cache
+      CACHE_PORT: 6379
+      JWT_SECRET: your_jwt_secret_here
+    ports:
+      - "8080:8080"
+    command: ["./main"]
+
+volumes:
+  db_data:

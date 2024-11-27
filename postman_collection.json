@@ -1,0 +1,360 @@
+{
+  "info": {
+    "name": "Developer Allocation System",
+    "_postman_id": "12345678-1234-1234-1234-123456789abc",
+    "description": "Postman collection to test all API endpoints of the Developer Allocation System.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"testpass\"\n}"
+            },
+            "url": "{{base_url}}/api/v1/auth/register"
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"testpass\"\n}"
+            },
+            "url": "{{base_url}}/api/v1/auth/login"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.environment.set(\"token\", jsonData.token);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Developers",
+      "item": [
+        {
+          "name": "Create Developer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Alice Smith\",\n  \"email\": \"alice@example.com\",\n  \"availability\": 40,\n  \"start_date\": \"2018-01-15T00:00:00Z\",\n  \"skill_level\": {\n    \"Go\": 5,\n    \"Docker\": 4,\n    \"Kubernetes\": 3\n  },\n  \"system_knowledge\": 90.0,\n  \"level\": \"Senior Dev\",\n  \"current_workload\": 10,\n  \"on_call_rotation_week\": false,\n  \"responsibilities\": [\"Code Deploy\", \"Code Merge\"],\n  \"is_available\": true,\n  \"time_zone\": \"America/Los_Angeles\",\n  \"language_proficiency\": [\"English\"]\n}"
+            },
+            "url": "{{base_url}}/api/v1/developers"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.environment.set(\"developer_id\", jsonData.id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All Developers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/developers"
+          }
+        },
+        {
+          "name": "Get Developer By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/developers/{{developer_id}}"
+          }
+        },
+        {
+          "name": "Update Developer",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Alice Johnson\",\n  \"email\": \"alice.johnson@example.com\",\n  \"availability\": 35,\n  \"start_date\": \"2018-01-15T00:00:00Z\",\n  \"skill_level\": {\n    \"Go\": 5,\n    \"Docker\": 5,\n    \"Kubernetes\": 4\n  },\n  \"system_knowledge\": 95.0,\n  \"level\": \"Senior Dev\",\n  \"current_workload\": 15,\n  \"on_call_rotation_week\": true,\n  \"responsibilities\": [\"Code Deploy\", \"Code Merge\", \"Database Migration\"],\n  \"is_available\": true,\n  \"time_zone\": \"America/Los_Angeles\",\n  \"language_proficiency\": [\"English\", \"Spanish\"]\n}"
+            },
+            "url": "{{base_url}}/api/v1/developers/{{developer_id}}"
+          }
+        },
+        {
+          "name": "Get Recommendations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/developers/recommendations/{{task_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "developers",
+                "recommendations",
+                "{{task_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Availability",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"availability\": 30\n}"
+            },
+            "url": "{{base_url}}/api/v1/developers/{{developer_id}}/availability"
+          }
+        },
+        {
+          "name": "Delete Developer",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/developers/{{developer_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tasks",
+      "item": [
+        {
+          "name": "Create Task",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Implement REST API\",\n  \"description\": \"Develop REST API endpoints for the new feature.\",\n  \"estimation\": 20,\n  \"required_skills\": {\n    \"Go\": 4,\n    \"REST\": 3\n  },\n  \"required_knowledge\": 80.0,\n  \"priority\": \"High\",\n  \"delivery_date\": \"{{delivery_date}}\",\n  \"status\": \"Not Started\",\n  \"dependencies\": [],\n  \"stakeholders\": [\"Product Team\"],\n  \"risk_assessment\": \"Medium\"\n}"
+            },
+            "url": "{{base_url}}/api/v1/tasks"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.environment.set(\"task_id\", jsonData.id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All Tasks",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/tasks"
+          }
+        },
+        {
+          "name": "Get Task By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/tasks/{{task_id}}"
+          }
+        },
+        {
+          "name": "Update Task",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Implement REST API\",\n  \"description\": \"Develop and test REST API endpoints.\",\n  \"estimation\": 25,\n  \"required_skills\": {\n    \"Go\": 5,\n    \"REST\": 4\n  },\n  \"required_knowledge\": 85.0,\n  \"priority\": \"High\",\n  \"delivery_date\": \"{{delivery_date}}\",\n  \"status\": \"In Progress\",\n  \"dependencies\": [],\n  \"stakeholders\": [\"Product Team\", \"QA Team\"],\n  \"risk_assessment\": \"Medium\"\n}"
+            },
+            "url": "{{base_url}}/api/v1/tasks/{{task_id}}"
+          }
+        },
+        {
+          "name": "Assign Task",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"task_id\": {{task_id}},\n    \"developer_id\": {{developer_id}}\n}"
+            },
+            "url": "{{base_url}}/api/v1/tasks/assign"
+          }
+        },
+        {
+          "name": "Predict Spillover",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/tasks/predict-spillover"
+          }
+        },
+        {
+          "name": "Delete Task",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/tasks/{{task_id}}"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "developer_id",
+      "value": ""
+    },
+    {
+      "key": "task_id",
+      "value": ""
+    },
+    {
+      "key": "delivery_date",
+      "value": "2024-12-31T00:00:00Z"
+    }
+  ]
+}
